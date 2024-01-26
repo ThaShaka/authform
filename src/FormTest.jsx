@@ -1,15 +1,16 @@
 import {useForm} from "react-hook-form";
+import axios from "axios";
+
 
 function FormTest() {
     const {register, handleSubmit, setError, formState : {errors, isSubmitting}} = useForm()
 
     const onSubmit = async (data) => {
         try {
-            await new Promise((resolve)=>setTimeout(resolve, 1000))
-            console.log(data)
-            throw new Error()
-        } catch (err) {
-            setError("email", {
+            const response = await axios.post("/register", data)
+            console.log(response)
+        } catch (error) {
+            setError("root", {
                 message: "THis emasdmsa",
             })
         }
@@ -19,19 +20,20 @@ function FormTest() {
     return (
         <>
             <form  method={"post"} onSubmit={handleSubmit(onSubmit)}>
-                <input {...register("username",
+                <input {...register("user",
                     {required: "Username is required",
                             minLength: 3
                     })}
                        type="text"
                        placeholder={"Username"}/>
                 {errors.username && <div>{errors.username.message}</div>}
-                <input {...register("password",
+                <input {...register("pwd",
                     {required: "Password is required", minLength : 8})}
                        type="password"
                        placeholder={"Password"}/>
                 {errors.password && <div>{errors.password.message}</div>}
                 <button disabled={isSubmitting}>{isSubmitting ? "Submitting..." : "Submit"}</button>
+                {errors.root && <div>{errors.root.message}</div>}
             </form>
         </>
     );
